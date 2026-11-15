@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Orbit Academy: Learn Space, Design a Mission</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#f3f5f9;--panel:#fff;--ink:#14213a;--mute:#5a6781;--line:#d3dae6;--a:#1f5fd1;--hot:#c4570a;--ok:#14804a;--bad:#c42b3a;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1322;--panel:#142038;--ink:#e6ecf8;--mute:#93a2c0;--line:#27375a;--a:#6fa8ff;--hot:#ffb347;--ok:#4cd68c;--bad:#ff6b7a;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0b1322;--panel:#142038;--ink:#e6ecf8;--mute:#93a2c0;--line:#27375a;--a:#6fa8ff;--hot:#ffb347;--ok:#4cd68c;--bad:#ff6b7a;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 "IBM Plex Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:"Bricolage Grotesque",Georgia,sans-serif;line-height:1.15;margin:0 0 .5em}
+h1{font-size:clamp(30px,6vw,48px);letter-spacing:-.02em}h2{font-size:26px}h3{font-size:19px}
+a{color:var(--a)}
+nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;gap:4px;flex-wrap:wrap;align-items:center;padding:10px 16px;background:var(--panel);border-bottom:1.5px solid var(--line)}
+nav b{font:800 18px "Bricolage Grotesque",sans-serif;margin-right:10px}
+nav a{padding:6px 12px;border-radius:8px;text-decoration:none;color:var(--ink);font-size:14.5px}
+nav a[aria-current="page"]{background:var(--a);color:#fff}
+nav .sp{flex:1}
+main{max-width:980px;margin:auto;padding:24px 18px 60px}
+[hidden]{display:none!important}
+.card{background:var(--panel);border:1.5px solid var(--line);border-radius:12px;padding:16px 18px;margin:14px 0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px}
+.grid a.card{text-decoration:none;color:inherit;margin:0;display:block}
+.grid a.card:hover{border-color:var(--a)}
+.lead{color:var(--mute);max-width:62ch}
+input,select{width:100%;padding:10px 12px;border-radius:8px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);font:inherit}
+label{display:block;margin:12px 0 4px;font-weight:500;font-size:14px}
+button{font:inherit;cursor:pointer;border-radius:10px;padding:10px 16px;border:1.5px solid var(--line);background:var(--panel);color:var(--ink)}
+button.pri{background:var(--hot);color:#111;border:0;font-weight:600}
+:focus-visible{outline:3px solid var(--hot);outline-offset:2px}
+.bar{height:10px;border-radius:6px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;background:var(--ok);width:0}
+table{border-collapse:collapse;width:100%;font-size:14.5px}th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left}
+.scroll{overflow-x:auto}
+.tl{border-left:3px solid var(--a);margin:14px 0 14px 8px;padding-left:18px}.tl div{margin:0 0 16px}.tl b{color:var(--hot)}
+.opt{display:block;width:100%;text-align:left;margin:8px 0}.opt.good{border-color:var(--ok);box-shadow:inset 0 0 0 1.5px var(--ok)}.opt.bad{border-color:var(--bad)}
+.note{font-size:13.5px;color:var(--mute)}
+footer{max-width:980px;margin:auto;padding:0 18px 40px;font-size:13px;color:var(--mute)}
+:root{--a:#7b3fe4;--hot:#ff7a1a;--pa:rgba(255,255,255,.9)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--a:#b79cff;--hot:#ffa23a;--pa:rgba(16,22,48,.88)}}
+:root[data-theme="dark"]{--a:#b79cff;--hot:#ffa23a;--pa:rgba(16,22,48,.88)}
+body{background:#2a1457}
+#scene{position:fixed;inset:0;z-index:-1;overflow:hidden}
+#scene svg{width:100%;height:100%;display:block}
+main{background:var(--pa);backdrop-filter:blur(6px);border-radius:18px;margin:18px auto;box-shadow:0 10px 40px rgba(20,5,60,.35)}
+body.login main{background:none;backdrop-filter:none;box-shadow:none}
+body.login .lead{color:#fff;text-shadow:0 2px 14px rgba(30,5,70,.7)}
+nav{background:linear-gradient(90deg,#4b1f9a,#b0408f 60%,#ff7a1a);border:0}
+nav b,nav a{color:#fff}nav a[aria-current="page"]{background:rgba(255,255,255,.25)}
+h1{background:linear-gradient(90deg,var(--a),var(--hot));-webkit-background-clip:text;background-clip:text;color:transparent}
+body.login h1{background:none;color:#fff;text-shadow:0 2px 14px rgba(30,5,70,.7)}
+button.pri{background:linear-gradient(90deg,#ff7a1a,#ff4f8b);color:#fff}
+.card{border-top:4px solid var(--hot)}
+.grid a.card:nth-child(2n){border-top-color:#1fb5a5}.grid a.card:nth-child(3n){border-top-color:var(--a)}
+.bar i{background:linear-gradient(90deg,#1fb5a5,#ffd24a)}
+footer{color:#fff;text-shadow:0 1px 6px rgba(0,0,0,.6)}
+@keyframes fl{50%{transform:translateY(-12px)}}@keyframes tw{50%{opacity:.25}}
+@media(prefers-reduced-motion:no-preference){.fl{animation:fl 7s ease-in-out infinite}.tw{animation:tw 3s ease-in-out infinite}}
+</style>
+</head>
+<body>
+<div id="scene" aria-hidden="true"></div>
+<nav id="nav" hidden aria-label="Main">
+<b>Orbit Academy</b>
+<a href="#home">Home</a><a href="#learn">Space basics</a><a href="#nasa">NASA</a><a href="#quiz">Quiz</a><a href="#game">Mission game</a><a href="#profile">Profile</a>
+</nav>
+<main>
+
+<section data-page="login">
+<h1>Welcome to Orbit Academy</h1>
+<p class="lead">Learn how space missions work, take a quiz, then design and fly your own mission.</p>
+<div class="card" style="max-width:420px">
+<h3>Student sign in</h3>
+<label for="u">Your name</label><input id="u" maxlength="40" autocomplete="name">
+<label for="c">Class or college (optional)</label><input id="c" maxlength="60">
+<p class="note">This sign in saves your progress in this browser only. There is no password and nothing is sent to a server.</p>
+<button class="pri" id="go">Enter Orbit Academy</button>
+<p id="err" class="note" style="color:var(--bad)"></p>
+</div>
+</section>
+
+<section data-page="home">
+<h1 id="hi"></h1>
+<p class="lead">Your path: read the basics, check what NASA has done, pass the quiz, then build a mission.</p>
+<div class="card"><b>Your progress</b><div class="bar" style="margin:8px 0"><i id="pb"></i></div><span class="note" id="pt"></span></div>
+<div class="grid">
+<a class="card" href="#learn"><h3>1. Space basics</h3>Five short lessons and two calculators.</a>
+<a class="card" href="#nasa"><h3>2. NASA and this site</h3>Missions that shaped the ideas here.</a>
+<a class="card" href="#quiz"><h3>3. Quiz</h3>Six questions. Your best score is saved.</a>
+<a class="card" href="#game"><h3>4. Mission game</h3>Design, launch and fly a real-style mission.</a>
+</div>
+</section>
+
+<section data-page="learn">
+<h1>Space basics</h1>
+<p class="lead">Short lessons. Mark each one as read to fill your progress bar.</p>
+<div id="lessons"></div>
+<h2>Planets and signal delay</h2>
+<div class="card scroll"><table><thead><tr><th>Planet</th><th>Distance from Sun (AU)</th><th>Sunlight vs Earth</th><th>One-way radio time</th></tr></thead><tbody id="ptab"></tbody></table>
+<p class="note">1 AU is the average Earth-Sun distance, about 150 million km. Light and radio cover 1 AU in about 8 minutes 19 seconds.</p></div>
+<div class="grid">
+<div class="card"><h3>Signal delay calculator</h3><label for="au">Distance from Earth (AU): <b id="auv">1.5</b></label><input id="au" type="range" min="0.1" max="30" step="0.1" value="1.5"><p id="dl"></p></div>
+<div class="card"><h3>Rocket equation calculator</h3>
+<label for="isp">Engine Isp (s)</label><input id="isp" type="number" value="310">
+<label for="dm">Dry mass (kg)</label><input id="dm" type="number" value="300">
+<label for="fm">Fuel mass (kg)</label><input id="fm" type="number" value="200">
+<p id="dv"></p></div>
+</div>
+</section>
+
+<section data-page="nasa">
+<h1>NASA and this website</h1>
+<p class="lead">NASA is the United States space agency, created in 1958. Its missions, open data and public education programs are the source of the ideas in this site.</p>
+<div class="tl">
+<div><b>1958</b> NASA is created. It brings the country&rsquo;s civil space work under one agency.</div>
+<div><b>1969</b> Apollo 11 lands the first people on the Moon on July 20. Moon missions in the game follow the same orbit and delta-v thinking.</div>
+<div><b>1977</b> Voyager 1 and 2 launch. Both use RTG power, the same idea as the RTG option in the game, and Voyager 1 later enters interstellar space.</div>
+<div><b>1990</b> The Hubble Space Telescope launches and changes how we see the universe.</div>
+<div><b>2009</b> The Lunar Reconnaissance Orbiter launches. It is the analog for the Moon mission.</div>
+<div><b>2011 to 2013</b> Juno and MAVEN launch. They are the real analogs for the Jupiter and Mars missions in the game.</div>
+<div><b>2021</b> Perseverance lands in Jezero crater, and its helicopter Ingenuity makes the first powered flight on another planet. The James Webb Space Telescope launches on December 25.</div>
+<div><b>2022</b> DART hits an asteroid to test planetary defense.</div>
+</div>
+<div class="card"><h3>What NASA contributes here</h3>
+<p><b>Mission facts:</b> the Moon, Mars and Jupiter missions are modeled on LRO, MAVEN and Juno, using rounded public figures.</p>
+<p><b>Open data and education:</b> NASA publishes mission pages, images and datasets for the public. Start at science.nasa.gov and images.nasa.gov.</p>
+<p><b>Space Apps Challenge:</b> this project was built for NASA&rsquo;s International Space Apps Challenge, a yearly global hackathon that uses NASA open data (spaceappschallenge.org).</p></div>
+<div class="card"><h3>Important</h3><p class="note">Orbit Academy is a student project. It is not affiliated with, sponsored by or endorsed by NASA, and it does not use the NASA logo. Verify every number against NASA&rsquo;s own pages before you cite it.</p></div>
+</section>
+
+<section data-page="quiz">
+<h1>Quiz</h1>
+<p class="lead" id="qbest"></p>
+<div class="card" id="qbox"></div>
+</section>
+
+<section data-page="game">
+<h1>Mission game</h1>
+<p class="lead">Pick a destination, build the spacecraft, then fly it. Name your mission to get a unique patch.</p>
+<iframe title="Mission design game" srcdoc="&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, viewport-fit=cover&quot;&gt;
+&lt;title&gt;Mission Desk: Design a Space Mission&lt;/title&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;800&amp;family=IBM+Plex+Sans:wght@400;500;600&amp;display=swap&quot;&gt;
+&lt;style&gt;
+:root{--bg:#f3f5f9;--panel:#fff;--ink:#14213a;--mute:#5a6781;--line:#d3dae6;--a:#1f5fd1;--hot:#c4570a;--ok:#14804a;--bad:#c42b3a;--warn:#a87400;--sky:#0f1b33;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme=&quot;light&quot;]){--bg:#0b1322;--panel:#142038;--ink:#e6ecf8;--mute:#93a2c0;--line:#27375a;--a:#6fa8ff;--hot:#ffb347;--ok:#4cd68c;--bad:#ff6b7a;--warn:#f2c14e;--sky:#060b16;color-scheme:dark}}
+:root[data-theme=&quot;dark&quot;]{--bg:#0b1322;--panel:#142038;--ink:#e6ecf8;--mute:#93a2c0;--line:#27375a;--a:#6fa8ff;--hot:#ffb347;--ok:#4cd68c;--bad:#ff6b7a;--warn:#f2c14e;--sky:#060b16;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 &quot;IBM Plex Sans&quot;,system-ui,sans-serif}
+h1,h2,h3{font-family:&quot;Bricolage Grotesque&quot;,Georgia,sans-serif;margin:0}
+h1{font-size:clamp(28px,5vw,44px);letter-spacing:-.02em;line-height:1.05}
+header{padding:28px 20px 8px;max-width:1100px;margin:auto}
+header p{max-width:62ch;color:var(--mute);margin:10px 0 0}
+main{max-width:1100px;margin:auto;padding:12px 20px 60px;display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px}
+@media(max-width:860px){main{grid-template-columns:1fr}}
+section.step{margin:18px 0 26px}
+section.step h2{font-size:20px;margin-bottom:4px}
+section.step&gt;p{margin:0 0 10px;color:var(--mute);font-size:14px}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:10px}
+.opt{text-align:left;background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:10px 12px;color:inherit;font:inherit;cursor:pointer}
+.opt:hover{border-color:var(--a)}
+.opt[aria-pressed=&quot;true&quot;]{border-color:var(--a);box-shadow:inset 0 0 0 1.5px var(--a)}
+.opt b{display:block;font-weight:600}
+.opt small{display:block;color:var(--mute);margin-top:2px;font-size:12.5px}
+:focus-visible{outline:3px solid var(--hot);outline-offset:2px}
+.fuel{background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:12px}
+.fuel input{width:100%}
+aside .box{position:sticky;top:calc(12px + env(safe-area-inset-top,0px));background:var(--panel);border:1.5px solid var(--line);border-radius:12px;padding:14px}
+.m{margin:10px 0}
+.m .row{display:flex;justify-content:space-between;font-size:13px;gap:8px}
+.m .row span:last-child{font-variant-numeric:tabular-nums;font-weight:600}
+.bar{height:8px;border-radius:5px;background:var(--line);overflow:hidden;margin-top:4px}
+.bar i{display:block;height:100%;width:0;background:var(--ok);transition:width .25s}
+.bar.warn i{background:var(--warn)}.bar.bad i{background:var(--bad)}
+.issues{margin:10px 0 0;padding:0;list-style:none;font-size:13px;color:var(--bad)}
+.issues li{margin:3px 0}.issues li.good{color:var(--ok)}
+button.go{width:100%;margin-top:12px;background:var(--hot);color:#111;border:0;border-radius:10px;padding:12px;font:600 16px &quot;IBM Plex Sans&quot;,sans-serif;cursor:pointer}
+button.go:disabled{opacity:.5}
+button.ghost{background:none;border:1.5px solid var(--line);color:inherit;border-radius:8px;padding:7px 12px;font:inherit;cursor:pointer}
+#sim{display:none;margin-top:10px}
+#sim canvas{width:100%;height:auto;border-radius:12px;background:var(--sky);display:block}
+#log{background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin-top:10px;min-height:60px}
+#log p{margin:6px 0}
+.t-bad{color:var(--bad)}.t-ok{color:var(--ok)}.t-w{color:var(--warn)}
+#result{display:none;background:var(--panel);border:2px solid var(--a);border-radius:12px;padding:16px;margin-top:12px}
+#result .score{font:800 44px &quot;Bricolage Grotesque&quot;,sans-serif}
+#result ul{padding-left:18px;margin:8px 0}
+.brief{background:var(--panel);border:1.5px solid var(--line);border-radius:10px;padding:10px 14px;margin-top:10px;font-size:14px}
+@media(prefers-reduced-motion:reduce){.bar i{transition:none}}
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;header&gt;
+&lt;h1&gt;Mission Desk&lt;/h1&gt;
+&lt;p&gt;Pick a destination, build the spacecraft, then fly it. Every kilogram, watt and dollar trades against something else. Fail, read the debrief, and redesign.&lt;/p&gt;
+&lt;div class=&quot;brief&quot; id=&quot;brief&quot;&gt;&lt;/div&gt;
+&lt;details class=&quot;brief&quot;&gt;&lt;summary&gt;&lt;b&gt;Real data and what is simplified&lt;/b&gt;&lt;/summary&gt;&lt;p&gt;&lt;b&gt;Based on real figures:&lt;/b&gt; destination distances (Moon 1 AU, Mars 1.5 AU, Jupiter 5.2 AU from the Sun), transfer times, insertion delta-v and budgets taken from the real analog missions LRO, MAVEN and Juno, the rocket equation, solar flux (1,361 W/m² at 1 AU, about 300 W/m² after cell efficiency), the inverse-square drop in sunlight and radio signal, and RTG size (about 45 kg and 100 W, like NASA’s MMRTG).&lt;/p&gt;&lt;p&gt;&lt;b&gt;Rounded or game-scaled:&lt;/b&gt; mission figures are rounded public numbers; verify them against NASA’s mission pages (science.nasa.gov) before citing. The 120 kg bus is far lighter than a real spacecraft, instrument and antenna specs are generic classes, launcher capacities are approximate, and event odds are game values, not flight statistics.&lt;/p&gt;&lt;/details&gt;
+&lt;/header&gt;
+&lt;main&gt;
+&lt;div&gt;
+&lt;section class=&quot;step&quot;&gt;&lt;h2&gt;1. Destination&lt;/h2&gt;&lt;p&gt;The farther you go, the weaker the sunlight and the slower the radio link.&lt;/p&gt;&lt;div class=&quot;opts&quot; id=&quot;g-mission&quot;&gt;&lt;/div&gt;&lt;/section&gt;
+&lt;section class=&quot;step&quot;&gt;&lt;h2&gt;2. Launch vehicle&lt;/h2&gt;&lt;p&gt;Bigger rockets lift more mass to far targets, cost more, and fail less often.&lt;/p&gt;&lt;div class=&quot;opts&quot; id=&quot;g-veh&quot;&gt;&lt;/div&gt;&lt;/section&gt;
+&lt;section class=&quot;step&quot;&gt;&lt;h2&gt;3. Propulsion and fuel&lt;/h2&gt;&lt;p&gt;Delta-v = Isp × g × ln(wet mass ÷ dry mass). Fuel adds delta-v but also mass.&lt;/p&gt;&lt;div class=&quot;opts&quot; id=&quot;g-prop&quot;&gt;&lt;/div&gt;
+&lt;div class=&quot;fuel&quot; style=&quot;margin-top:10px&quot;&gt;&lt;label for=&quot;fuel&quot;&gt;Fuel loaded: &lt;b id=&quot;fuelv&quot;&gt;&lt;/b&gt; kg&lt;/label&gt;&lt;input id=&quot;fuel&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;1500&quot; step=&quot;5&quot;&gt;&lt;/div&gt;&lt;/section&gt;
+&lt;section class=&quot;step&quot;&gt;&lt;h2&gt;4. Power&lt;/h2&gt;&lt;p&gt;Solar output falls with the square of distance from the Sun. RTGs give steady power anywhere but are heavy and costly.&lt;/p&gt;&lt;div class=&quot;opts&quot; id=&quot;g-pow&quot;&gt;&lt;/div&gt;&lt;/section&gt;
+&lt;section class=&quot;step&quot;&gt;&lt;h2&gt;5. Communications&lt;/h2&gt;&lt;p&gt;Your antenna sets how much science data you can send home each day.&lt;/p&gt;&lt;div class=&quot;opts&quot; id=&quot;g-ant&quot;&gt;&lt;/div&gt;&lt;/section&gt;
+&lt;section class=&quot;step&quot;&gt;&lt;h2&gt;6. Instruments&lt;/h2&gt;&lt;p&gt;Choose any number. Each one draws power, adds mass, and produces data you must downlink.&lt;/p&gt;&lt;div class=&quot;opts&quot; id=&quot;g-inst&quot;&gt;&lt;/div&gt;&lt;/section&gt;
+&lt;section class=&quot;step&quot;&gt;&lt;h2&gt;7. Target orbit&lt;/h2&gt;&lt;p&gt;Orbit shapes everything: lower means better images and a harder burn, and solar panels lose power in the planet’s shadow.&lt;/p&gt;&lt;div class=&quot;opts&quot; id=&quot;g-orb&quot;&gt;&lt;/div&gt;&lt;/section&gt;
+&lt;section class=&quot;step&quot;&gt;&lt;h2&gt;8. Risk protection&lt;/h2&gt;&lt;p&gt;Things go wrong in space. These cut the odds.&lt;/p&gt;&lt;div class=&quot;opts&quot; id=&quot;g-ext&quot;&gt;&lt;/div&gt;&lt;div class=&quot;fuel&quot; style=&quot;margin-top:10px&quot;&gt;&lt;label for=&quot;res&quot;&gt;Operations reserve: $&lt;b id=&quot;resv&quot;&gt;&lt;/b&gt;M. In flight you decide whether to spend $15M of it on each problem. Unspent money counts toward your score.&lt;/label&gt;&lt;input id=&quot;res&quot; type=&quot;range&quot; min=&quot;0&quot; max=&quot;60&quot; step=&quot;15&quot;&gt;&lt;/div&gt;&lt;/section&gt;
+&lt;section class=&quot;step&quot;&gt;&lt;h2&gt;9. Name your mission&lt;/h2&gt;&lt;p&gt;Your name and every design choice generate a one-of-a-kind mission patch after the flight. Change anything and the patch changes.&lt;/p&gt;&lt;input id=&quot;mname&quot; maxlength=&quot;24&quot; placeholder=&quot;e.g. Aurora Survey&quot; aria-label=&quot;Mission name&quot; style=&quot;width:100%;max-width:340px;padding:10px 12px;border-radius:8px;border:1.5px solid var(--line);background:var(--panel);color:var(--ink);font:inherit&quot;&gt;&lt;/section&gt;
+&lt;section id=&quot;sim&quot;&gt;
+&lt;h2&gt;Mission flight&lt;/h2&gt;
+&lt;canvas id=&quot;cv&quot; width=&quot;800&quot; height=&quot;300&quot; role=&quot;img&quot; aria-label=&quot;Spacecraft path from Earth to the target&quot;&gt;&lt;/canvas&gt;
+&lt;div id=&quot;log&quot; aria-live=&quot;polite&quot;&gt;&lt;/div&gt;
+&lt;div id=&quot;result&quot;&gt;&lt;/div&gt;
+&lt;/section&gt;
+&lt;/div&gt;
+&lt;aside&gt;&lt;div class=&quot;box&quot;&gt;
+&lt;h3 style=&quot;margin-bottom:6px&quot;&gt;Spacecraft check&lt;/h3&gt;&lt;canvas id=&quot;sc&quot; width=&quot;320&quot; height=&quot;150&quot; style=&quot;width:100%;border-radius:8px;display:block&quot; role=&quot;img&quot; aria-label=&quot;Live preview of your spacecraft&quot;&gt;&lt;/canvas&gt;
+&lt;div id=&quot;meters&quot;&gt;&lt;/div&gt;
+&lt;ul class=&quot;issues&quot; id=&quot;issues&quot;&gt;&lt;/ul&gt;
+&lt;button class=&quot;go&quot; id=&quot;launch&quot;&gt;Launch mission&lt;/button&gt;
+&lt;button class=&quot;ghost&quot; id=&quot;rec&quot; style=&quot;width:100%;margin-top:8px&quot;&gt;Load a known-good build&lt;/button&gt;
+&lt;button class=&quot;ghost&quot; id=&quot;reset&quot; style=&quot;width:100%;margin-top:8px&quot;&gt;Back to design&lt;/button&gt;
+&lt;/div&gt;&lt;/aside&gt;
+&lt;/main&gt;
+&lt;script&gt;
+const SOLAR=300,G=9.81,BUS={m:120,p:60,c:40};
+const MISSIONS=[
+{n:&quot;Lunar polar orbiter&quot;,d:1,dv:1.0,budget:550,target:50,ops:300,t:&quot;~5 day transfer&quot;,ref:&quot;Lunar Reconnaissance Orbiter (2009): about 1,900 kg at launch, roughly $0.5B class, ~4.5 day trip, lunar orbit insertion near 0.9 km/s.&quot;,note:&quot;Close to home. Easy link, easy power.&quot;},
+{n:&quot;Mars climate orbiter&quot;,d:1.5,dv:1.3,budget:700,target:70,ops:260,t:&quot;~10 month transfer&quot;,ref:&quot;MAVEN (2013): about 2,450 kg at launch, roughly $0.67B including launch, ~10 month trip, orbit insertion burns of roughly 1 to 1.5 km/s.&quot;,note:&quot;Weaker sun, longer link.&quot;},
+{n:&quot;Jupiter moon flyby&quot;,d:5.2,dv:0.55,budget:1150,target:25,ops:450,t:&quot;~5 year transfer&quot;,ref:&quot;Juno (2011): about 3,600 kg at launch, roughly $1.1B, ~5 year trip, three solar wings (~60 m²) at 5 AU, Jupiter insertion near 0.5 km/s.&quot;,note:&quot;Sunlight is 1/27 of Earth’s. Plan power first.&quot;}];
+const VEH=[
+{n:&quot;Small lifter&quot;,c:60,cap:[450,200,60],rel:.88},
+{n:&quot;Medium lifter&quot;,c:150,cap:[1800,900,300],rel:.94},
+{n:&quot;Heavy lifter&quot;,c:400,cap:[6000,3500,1400],rel:.97}];
+const PROP=[
+{n:&quot;Monopropellant&quot;,isp:230,m:20,c:8,i:&quot;Light and simple&quot;},
+{n:&quot;Bipropellant&quot;,isp:310,m:40,c:20,i:&quot;Efficient chemical engine&quot;},
+{n:&quot;Ion thruster&quot;,isp:3000,m:90,c:45,i:&quot;Superb Isp, needs 350 W, slow trips&quot;,ion:1}];
+const POW=[
+{n:&quot;Solar 2 m²&quot;,a:2,m:6,c:5},{n:&quot;Solar 6 m²&quot;,a:6,m:18,c:12},{n:&quot;Solar 12 m²&quot;,a:12,m:36,c:22},
+{n:&quot;RTG ×1 (100 W)&quot;,w:100,m:45,c:60},{n:&quot;RTG ×2 (200 W)&quot;,w:200,m:85,c:110}];
+const ANT=[
+{n:&quot;Low-gain&quot;,m:3,p:10,r:1,c:5},{n:&quot;Medium-gain&quot;,m:10,p:30,r:4,c:12},{n:&quot;High-gain dish&quot;,m:25,p:60,r:32,c:30}];
+const INST=[
+{n:&quot;Camera&quot;,m:12,p:25,d:1.5,s:20,c:25},{n:&quot;Spectrometer&quot;,m:18,p:30,d:1,s:30,c:35},
+{n:&quot;Magnetometer&quot;,m:5,p:8,d:.2,s:12,c:12},{n:&quot;Radar sounder&quot;,m:35,p:70,d:3,s:45,c:70}];
+const EXT=[
+{n:&quot;Redundant computer&quot;,m:8,c:15,i:&quot;Fewer software and hardware faults&quot;,k:&quot;red&quot;},
+{n:&quot;Radiation shielding&quot;,m:12,c:10,i:&quot;Protects against solar storms&quot;,k:&quot;shd&quot;}];
+const S={mi:0,v:1,p:1,pw:1,an:1,ins:new Set([0]),ex:new Set(),fuel:100,or:0,res:15};
+const ORB=[{n:&quot;Low circular orbit&quot;,dv:1,sci:1,ecl:.35,i:&quot;Sharpest science, longest eclipses, most delta-v&quot;},{n:&quot;Elliptical orbit&quot;,dv:.75,sci:.8,ecl:.2,i:&quot;Balanced detail, power and fuel&quot;},{n:&quot;High circular orbit&quot;,dv:.6,sci:.6,ecl:.05,i:&quot;Cheapest to reach, coarse science, steady sun&quot;}];
+const $=s=&gt;document.querySelector(s);
+function group(id,arr,key,multi,desc){
+  const el=$(id);el.innerHTML=&quot;&quot;;
+  arr.forEach((o,i)=&gt;{
+    const b=document.createElement(&quot;button&quot;);b.className=&quot;opt&quot;;b.type=&quot;button&quot;;
+    b.innerHTML=&quot;&lt;b&gt;&quot;+o.n+&quot;&lt;/b&gt;&lt;small&gt;&quot;+desc(o)+&quot;&lt;/small&gt;&quot;;
+    b.onclick=()=&gt;{if(multi){S[key].has(i)?S[key].delete(i):S[key].add(i)}else S[key]=i;update()};
+    b.dataset.i=i;el.appendChild(b)});
+}
+function mark(id,key,multi){document.querySelectorAll(id+&quot; .opt&quot;).forEach(b=&gt;{const i=+b.dataset.i;b.setAttribute(&quot;aria-pressed&quot;,multi?S[key].has(i):S[key]===i)})}
+function calc(){
+  const M=MISSIONS[S.mi],V=VEH[S.v],P=PROP[S.p],W=POW[S.pw],A=ANT[S.an],d=M.d,O=ORB[S.or],dvReq=M.dv*O.dv;
+  const ins=[...S.ins].map(i=&gt;INST[i]),ex=[...S.ex].map(i=&gt;EXT[i]);
+  const dry=BUS.m+P.m+W.m+A.m+ins.reduce((s,x)=&gt;s+x.m,0)+ex.reduce((s,x)=&gt;s+x.m,0);
+  const wet=dry+S.fuel,cap=V.cap[S.mi],dv=P.isp*G*Math.log(wet/dry)/1000;
+  const cost=(V.c+P.c+W.c+A.c+BUS.c+ins.reduce((s,x)=&gt;s+x.c,0)+ex.reduce((s,x)=&gt;s+x.c,0)+M.ops*(P.ion?1.15:1)+S.res);
+  const avail=W.a?W.a*SOLAR/(d*d)*(1-O.ecl):W.w;
+  const load=BUS.p+A.p+ins.reduce((s,x)=&gt;s+x.p,0);
+  const dm=(1+d)/2,availMid=W.a?W.a*SOLAR/(dm*dm):W.w,ionLoad=P.ion?BUS.p+A.p+350:0;
+  const prod=ins.reduce((s,x)=&gt;s+x.d,0),down=A.r/(d*d);
+  const link=prod?Math.min(1,down/prod):0,pwr=Math.min(1,avail/load);
+  const sciMax=ins.reduce((s,x)=&gt;s+x.s,0),sci=sciMax*link*pwr*O.sci;
+  return{M,V,P,W,A,O,dvReq,ins,ex,dry,wet,cap,dv,cost,avail,load,availMid,ionLoad,prod,down,link,pwr,sciMax,sci};
+}
+function problems(c){
+  const L=[];
+  if(c.wet&gt;c.cap)L.push(&quot;Too heavy: &quot;+Math.round(c.wet)+&quot; kg vs &quot;+c.cap+&quot; kg this rocket can send here.&quot;);
+  if(c.cost&gt;c.M.budget)L.push(&quot;Over budget by $&quot;+Math.round(c.cost-c.M.budget)+&quot;M.&quot;);
+  if(c.dv&lt;c.dvReq*.9)L.push(&quot;Delta-v &quot;+c.dv.toFixed(2)+&quot; km/s is far below the &quot;+c.dvReq.toFixed(2)+&quot; needed for this orbit.&quot;);
+  else if(c.dv&lt;c.dvReq)L.push(&quot;Delta-v is slightly short. Orbit insertion will be marginal.&quot;);
+  if(c.avail&lt;c.load)L.push(&quot;Power short: &quot;+Math.round(c.avail)+&quot; W available, &quot;+Math.round(c.load)+&quot; W needed for science.&quot;);
+  if(c.P.ion&amp;&amp;c.availMid&lt;c.ionLoad)L.push(&quot;Not enough power to run the ion thruster in cruise.&quot;);
+  if(!c.ins.length)L.push(&quot;No instruments. No science.&quot;);
+  else if(c.link&lt;.7)L.push(&quot;Antenna can return only &quot;+Math.round(c.link*100)+&quot;% of the data you produce.&quot;);
+  if(c.sci&lt;c.M.target&amp;&amp;!L.length)L.push(&quot;Science potential &quot;+Math.round(c.sci)+&quot; is under the target of &quot;+c.M.target+&quot;.&quot;);
+  return L;
+}
+function meter(l,v,max,txt,inv){
+  const r=v/max,cls=inv?(r&gt;=1?&quot;&quot;:r&gt;=.7?&quot;warn&quot;:&quot;bad&quot;):(r&gt;1?&quot;bad&quot;:r&gt;.9?&quot;warn&quot;:&quot;&quot;);
+  return &#x27;&lt;div class=&quot;m&quot;&gt;&lt;div class=&quot;row&quot;&gt;&lt;span&gt;&#x27;+l+&#x27;&lt;/span&gt;&lt;span&gt;&#x27;+txt+&#x27;&lt;/span&gt;&lt;/div&gt;&lt;div class=&quot;bar &#x27;+cls+&#x27;&quot;&gt;&lt;i style=&quot;width:&#x27;+Math.min(100,r*100)+&#x27;%&quot;&gt;&lt;/i&gt;&lt;/div&gt;&lt;/div&gt;&#x27;;
+}
+function update(){
+  const c=calc(),M=c.M;
+  mark(&quot;#g-mission&quot;,&quot;mi&quot;);mark(&quot;#g-veh&quot;,&quot;v&quot;);mark(&quot;#g-prop&quot;,&quot;p&quot;);mark(&quot;#g-pow&quot;,&quot;pw&quot;);mark(&quot;#g-ant&quot;,&quot;an&quot;);mark(&quot;#g-inst&quot;,&quot;ins&quot;,1);mark(&quot;#g-ext&quot;,&quot;ex&quot;,1);mark(&quot;#g-orb&quot;,&quot;or&quot;);
+  $(&quot;#fuelv&quot;).textContent=S.fuel;$(&quot;#fuel&quot;).value=S.fuel;$(&quot;#resv&quot;).textContent=S.res;$(&quot;#res&quot;).value=S.res;
+  $(&quot;#brief&quot;).innerHTML=&quot;&lt;b&gt;&quot;+M.n+&quot;&lt;/b&gt; · &quot;+M.d+&quot; AU · &quot;+M.t+&quot; · budget $&quot;+M.budget+&quot;M · science target &quot;+M.target+&quot;. &quot;+M.note+&quot;&lt;br&gt;&lt;small&gt;Real analog: &quot;+M.ref+&quot;&lt;/small&gt;&quot;;
+  $(&quot;#meters&quot;).innerHTML=
+    meter(&quot;Mass vs lift capacity&quot;,c.wet,c.cap,Math.round(c.wet)+&quot; / &quot;+c.cap+&quot; kg&quot;)+
+    meter(&quot;Cost vs budget&quot;,c.cost,M.budget,&quot;$&quot;+Math.round(c.cost)+&quot;M / $&quot;+M.budget+&quot;M&quot;)+
+    meter(&quot;Delta-v&quot;,c.dv,c.dvReq,c.dv.toFixed(2)+&quot; / &quot;+c.dvReq.toFixed(2)+&quot; km/s&quot;,1)+
+    meter(&quot;Power for science&quot;,c.avail,c.load,Math.round(c.avail)+&quot; / &quot;+Math.round(c.load)+&quot; W&quot;,1)+
+    meter(&quot;Data downlink&quot;,c.down,c.prod||1,c.down.toFixed(2)+&quot; / &quot;+c.prod.toFixed(1)+&quot; Gb/day&quot;,1)+
+    meter(&quot;Science potential&quot;,c.sci,M.target,Math.round(c.sci)+&quot; / &quot;+M.target,1);
+  craft(c);const p=problems(c);
+  $(&quot;#issues&quot;).innerHTML=p.length?p.map(x=&gt;&quot;&lt;li&gt;&quot;+x+&quot;&lt;/li&gt;&quot;).join(&quot;&quot;):&#x27;&lt;li class=&quot;good&quot;&gt;Design looks flight-ready.&lt;/li&gt;&#x27;;
+}
+function build(){
+  group(&quot;#g-mission&quot;,MISSIONS,&quot;mi&quot;,0,o=&gt;o.d+&quot; AU · $&quot;+o.budget+&quot;M budget&quot;);
+  group(&quot;#g-veh&quot;,VEH,&quot;v&quot;,0,o=&gt;&quot;$&quot;+o.c+&quot;M · &quot;+Math.round(o.rel*100)+&quot;% reliable&lt;br&gt;Lifts &quot;+o.cap.join(&quot; / &quot;)+&quot; kg to Moon / Mars / Jupiter&quot;);
+  group(&quot;#g-prop&quot;,PROP,&quot;p&quot;,0,o=&gt;o.i+&quot;&lt;br&gt;Isp &quot;+o.isp+&quot; s · &quot;+o.m+&quot; kg · $&quot;+o.c+&quot;M&quot;);
+  group(&quot;#g-pow&quot;,POW,&quot;pw&quot;,0,o=&gt;(o.a?&quot;Sunlight-driven, scales with distance&quot;:&quot;Constant output&quot;)+&quot;&lt;br&gt;&quot;+o.m+&quot; kg · $&quot;+o.c+&quot;M&quot;);
+  group(&quot;#g-ant&quot;,ANT,&quot;an&quot;,0,o=&gt;o.r+&quot; Gb/day at 1 AU&lt;br&gt;&quot;+o.m+&quot; kg · &quot;+o.p+&quot; W · $&quot;+o.c+&quot;M&quot;);
+  group(&quot;#g-inst&quot;,INST,&quot;ins&quot;,1,o=&gt;&quot;Science &quot;+o.s+&quot; · &quot;+o.d+&quot; Gb/day&lt;br&gt;&quot;+o.m+&quot; kg · &quot;+o.p+&quot; W · $&quot;+o.c+&quot;M&quot;);
+  group(&quot;#g-orb&quot;,ORB,&quot;or&quot;,0,o=&gt;o.i+&quot;&lt;br&gt;Delta-v ×&quot;+o.dv+&quot; · science ×&quot;+o.sci+&quot; · eclipse &quot;+Math.round(o.ecl*100)+&quot;%&quot;);
+  group(&quot;#g-ext&quot;,EXT,&quot;ex&quot;,1,o=&gt;o.i+&quot;&lt;br&gt;&quot;+o.m+&quot; kg · $&quot;+o.c+&quot;M&quot;);
+}
+$(&quot;#fuel&quot;).oninput=e=&gt;{S.fuel=+e.target.value;update()};
+$(&quot;#res&quot;).oninput=e=&gt;{S.res=+e.target.value;update()};
+const cv=$(&quot;#cv&quot;),ctx=cv.getContext(&quot;2d&quot;);
+const SPR={};
+function sprite(k,r){
+  const key=k+r;if(SPR[key])return SPR[key];
+  const c=document.createElement(&quot;canvas&quot;);c.width=c.height=r*4;
+  const g=c.getContext(&quot;2d&quot;),m=r*2,F=r*4;let s=k.length*7919+r;
+  const R=()=&gt;(s=(s*16807)%2147483647)/2147483647;
+  const blob=(col,n,sz,al)=&gt;{g.fillStyle=col;g.globalAlpha=al;for(let i=0;i&lt;n;i++){g.beginPath();g.ellipse(m+(R()-.5)*r*1.8,m+(R()-.5)*r*1.8,r*sz*(.4+R()),r*sz*(.3+R()*.7),R()*3,0,7);g.fill()}g.globalAlpha=1};
+  if(k===&quot;sun&quot;){const a=g.createRadialGradient(m,m,r*.8,m,m,r*2);a.addColorStop(0,&quot;rgba(255,190,60,.55)&quot;);a.addColorStop(1,&quot;rgba(255,160,30,0)&quot;);g.fillStyle=a;g.fillRect(0,0,F,F)}
+  g.save();g.beginPath();g.arc(m,m,r,0,7);g.clip();
+  if(k===&quot;sun&quot;){const b=g.createRadialGradient(m,m,0,m,m,r);b.addColorStop(0,&quot;#fffbe0&quot;);b.addColorStop(.6,&quot;#ffd24a&quot;);b.addColorStop(1,&quot;#ff9a1f&quot;);g.fillStyle=b;g.fillRect(0,0,F,F);blob(&quot;#ff8a1a&quot;,40,.08,.35);blob(&quot;#fff2b0&quot;,30,.07,.4)}
+  else if(k===&quot;earth&quot;){g.fillStyle=&quot;#17509e&quot;;g.fillRect(0,0,F,F);blob(&quot;#2f7d3b&quot;,6,.45,.95);blob(&quot;#8b7b4a&quot;,4,.25,.9);g.fillStyle=&quot;#f2f6fa&quot;;g.fillRect(m-r,m-r,r*2,r*.14);g.fillRect(m-r,m+r*.88,r*2,r*.14);blob(&quot;#ffffff&quot;,16,.35,.5)}
+  else if(k===&quot;moon&quot;){g.fillStyle=&quot;#a9a9ab&quot;;g.fillRect(0,0,F,F);blob(&quot;#6f6f73&quot;,6,.4,.55);for(let i=0;i&lt;22;i++){const x=m+(R()-.5)*r*1.8,y=m+(R()-.5)*r*1.8,q=r*(.05+R()*.12);g.lineWidth=1;g.strokeStyle=&quot;rgba(40,40,45,.55)&quot;;g.beginPath();g.arc(x,y,q,0,7);g.stroke();g.strokeStyle=&quot;rgba(235,235,235,.4)&quot;;g.beginPath();g.arc(x-.5,y-.5,q,2.4,5);g.stroke()}}
+  else if(k===&quot;mars&quot;){g.fillStyle=&quot;#b5532c&quot;;g.fillRect(0,0,F,F);blob(&quot;#d98a57&quot;,8,.35,.6);blob(&quot;#6e3320&quot;,7,.3,.7);g.fillStyle=&quot;#f3f1ee&quot;;g.fillRect(m-r*.4,m-r,r*.8,r*.16)}
+  else{const cols=[&quot;#e3cba5&quot;,&quot;#b98a5c&quot;,&quot;#efdcbc&quot;,&quot;#a3714a&quot;,&quot;#dcc09a&quot;,&quot;#c08e62&quot;,&quot;#e9d3b0&quot;,&quot;#9c6a45&quot;],h=r*2/cols.length;cols.forEach((c2,i)=&gt;{g.fillStyle=c2;g.fillRect(0,m-r+i*h,F,h+1)});blob(&quot;#c9a278&quot;,10,.3,.35);g.fillStyle=&quot;#b3452d&quot;;g.beginPath();g.ellipse(m+r*.3,m+r*.35,r*.22,r*.13,0,0,7);g.fill()}
+  if(k!==&quot;sun&quot;){const sh=g.createRadialGradient(m-r*.4,m-r*.4,r*.1,m,m,r);sh.addColorStop(0,&quot;rgba(255,255,255,.2)&quot;);sh.addColorStop(.55,&quot;rgba(0,0,0,0)&quot;);sh.addColorStop(1,&quot;rgba(0,0,0,.7)&quot;);g.fillStyle=sh;g.fillRect(0,0,F,F)}
+  g.restore();
+  if(k===&quot;earth&quot;){const a=g.createRadialGradient(m,m,r*.9,m,m,r*1.35);a.addColorStop(0,&quot;rgba(120,180,255,.7)&quot;);a.addColorStop(1,&quot;rgba(120,180,255,0)&quot;);g.globalCompositeOperation=&quot;destination-over&quot;;g.fillStyle=a;g.fillRect(0,0,F,F);g.globalCompositeOperation=&quot;source-over&quot;}
+  return SPR[key]=c}
+function body(k,x,y,r){const s=sprite(k,r);ctx.drawImage(s,x-s.width/2,y-s.height/2)}
+function draw(pr,fail){
+  const css=getComputedStyle(document.documentElement),W=cv.width,H=cv.height,d=MISSIONS[S.mi].d;
+  ctx.clearRect(0,0,W,H);
+  for(let i=0;i&lt;60;i++){ctx.fillStyle=&quot;rgba(255,255,255,.35)&quot;;ctx.fillRect((i*137)%W,(i*71)%H,1.5,1.5)}
+  const sx=50,ey=H/2,ex=sx+90,tx=sx+90+(d-1)/4.2*(W-200)+ (d===1?170:0),ty=ey;
+  body(&quot;sun&quot;,sx,ey,38);
+  body(&quot;earth&quot;,ex,ey,20);
+  ctx.setLineDash([5,5]);ctx.strokeStyle=&quot;#6a7da8&quot;;ctx.beginPath();ctx.moveTo(ex,ey);ctx.quadraticCurveTo((ex+tx)/2,ey-90,tx,ty);ctx.stroke();ctx.setLineDash([]);
+  body([&quot;moon&quot;,&quot;mars&quot;,&quot;jupiter&quot;][S.mi],tx,ty,[12,16,34][S.mi]);
+  ctx.fillStyle=&quot;#c9d4ee&quot;;ctx.font=&quot;13px sans-serif&quot;;ctx.fillText(&quot;Earth&quot;,ex-14,ey+40);ctx.fillText([&quot;Moon&quot;,&quot;Mars&quot;,&quot;Jupiter&quot;][S.mi],tx-20,ty+[30,34,52][S.mi]);
+  const t=Math.min(1,pr),u=1-t,px=u*u*ex+2*u*t*((ex+tx)/2)+t*t*tx,py=u*u*ey+2*u*t*(ey-90)+t*t*ty;
+  ctx.fillStyle=fail?&quot;#ff6b7a&quot;:&quot;#fff&quot;;ctx.beginPath();ctx.arc(px,py,5,0,7);ctx.fill();
+  if(fail){ctx.strokeStyle=&quot;#ff6b7a&quot;;ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(px-10,py-10);ctx.lineTo(px+10,py+10);ctx.moveTo(px+10,py-10);ctx.lineTo(px-10,py+10);ctx.stroke();ctx.lineWidth=1}
+}
+let timer=null;
+function say(h,cls){const p=document.createElement(&quot;p&quot;);p.className=cls||&quot;&quot;;p.textContent=h;$(&quot;#log&quot;).appendChild(p)}
+function fly(){
+  const c=calc(),M=c.M;clearTimeout(timer);
+  $(&quot;#sim&quot;).style.display=&quot;block&quot;;$(&quot;#log&quot;).innerHTML=&quot;&quot;;$(&quot;#result&quot;).style.display=&quot;none&quot;;
+  $(&quot;#launch&quot;).disabled=true;
+  $(&quot;#sim&quot;).scrollIntoView({behavior:&quot;smooth&quot;});
+  let prog=0,sf=1,why=[],ok=true,res=S.res;
+  const steps=[
+  ()=&gt;{draw(0);say(&quot;Design review: spacecraft is &quot;+Math.round(c.wet)+&quot; kg, cost $&quot;+Math.round(c.cost)+&quot;M.&quot;);
+    if(c.cost&gt;M.budget){say(&quot;Review board cancels the mission: $&quot;+Math.round(c.cost-M.budget)+&quot;M over budget.&quot;,&quot;t-bad&quot;);why.push(&quot;Cut cost: smaller rocket, fewer instruments, or lighter power.&quot;);ok=false;return 0}},
+  ()=&gt;{if(c.wet&gt;c.cap){say(&quot;Launch rejected: &quot;+c.V.n+&quot; can lift only &quot;+c.cap+&quot; kg to this target.&quot;,&quot;t-bad&quot;);why.push(&quot;Lower mass or pick a stronger rocket.&quot;);ok=false;return 0}
+    say(&quot;Countdown… liftoff on the &quot;+c.V.n+&quot;.&quot;);
+    if(Math.random()&gt;c.V.rel+(S.ex.has(0)?.0:0)){say(&quot;Launch failure. The rocket is lost (&quot;+Math.round(c.V.rel*100)+&quot;% reliability gives this risk).&quot;,&quot;t-bad&quot;);why.push(&quot;A more reliable rocket lowers launch risk. Even good designs can lose a roll.&quot;);ok=false;prog=.05;return 0}
+    say(&quot;Orbit reached. Cruise begins.&quot;,&quot;t-ok&quot;);prog=.15},
+  ()=&gt;{prog=.4;const f=S.ex.has(0)?.05:.28;
+    if(Math.random()&lt;f){why.push(&quot;A redundant computer cuts fault odds from 28% to 5%.&quot;);return decide(&quot;Flight computer fault in cruise. Safe mode engaged.&quot;,.75,.95)}else say(&quot;Cruise systems nominal.&quot;,&quot;t-ok&quot;)},
+  ()=&gt;{prog=.6;const f=S.ex.has(1)?.05:.3;
+    if(Math.random()&lt;f){why.push(&quot;Radiation shielding cuts storm damage odds from 30% to 5%.&quot;);return decide(&quot;Solar storm hits. Instruments are at risk.&quot;,.8,.95)}else say(&quot;No major radiation events.&quot;,&quot;t-ok&quot;)},
+  ()=&gt;{prog=.85;
+    if(c.P.ion&amp;&amp;c.availMid&lt;c.ionLoad){say(&quot;Ion thruster starved of power. Transfer burn falls short.&quot;,&quot;t-bad&quot;);why.push(&quot;Ion drives need ~350 W in cruise. Add power or use chemical.&quot;);ok=false;return 0}
+    if(c.dv&lt;c.dvReq*.9){say(&quot;Orbit insertion fails. Needed &quot;+c.dvReq.toFixed(2)+&quot; km/s for the &quot;+c.O.n.toLowerCase()+&quot;, had &quot;+c.dv.toFixed(2)+&quot;.&quot;,&quot;t-bad&quot;);why.push(&quot;Add fuel, or use a higher-Isp engine, while watching total mass.&quot;);ok=false;return 0}
+    if(c.dv&lt;c.dvReq){sf*=.6;say(&quot;Marginal insertion burn. Orbit is poor and coverage suffers.&quot;,&quot;t-w&quot;);why.push(&quot;Slightly more fuel would have given a clean orbit.&quot;)}
+    else say(&quot;Orbit insertion complete with &quot;+(c.dv-c.dvReq).toFixed(2)+&quot; km/s spare.&quot;,&quot;t-ok&quot;);prog=1},
+  ()=&gt;{prog=.95;return choose(&quot;Arrival. Choose your science plan:&quot;,[
+    [&quot;Balanced plan&quot;,()=&gt;say(&quot;Balanced plan: steady observations.&quot;)],
+    [&quot;Data surge: +15% science, 30% risk of overheating&quot;,()=&gt;{if(Math.random()&lt;.3){sf*=.7;say(&quot;Instruments overheated and shut down for days. Science drops 30%.&quot;,&quot;t-bad&quot;);why.push(&quot;A data surge pays +15% but fails 30% of the time. Use it only when you can afford the loss.&quot;)}else{sf*=1.15;say(&quot;The surge ran cleanly. Science up 15%.&quot;,&quot;t-ok&quot;)}}],
+    [&quot;Conserve power: -10% science, safe&quot;,()=&gt;{sf*=.9;say(&quot;Low-power plan keeps instruments cool. Science down 10%.&quot;,&quot;t-w&quot;)}]])},
+  ()=&gt;{
+    if(c.pwr&lt;1){say(&quot;Power at target: &quot;+Math.round(c.avail)+&quot; W vs &quot;+Math.round(c.load)+&quot; W. Instruments are throttled to &quot;+Math.round(c.pwr*100)+&quot;%.&quot;,&quot;t-w&quot;);why.push(&quot;Add solar area or an RTG, or drop a power-hungry instrument.&quot;)}
+    if(c.link&lt;1){say(&quot;Downlink returns &quot;+Math.round(c.link*100)+&quot;% of produced data. The rest is lost.&quot;,&quot;t-w&quot;);why.push(&quot;A larger antenna or fewer data-heavy instruments raises returned science.&quot;)}
+    const sc=c.sci*sf,ach=Math.min(1.25,sc/M.target),win=sc&gt;=M.target;
+    const bud=Math.max(0,Math.min(1,1-(c.cost-res)/M.budget))*20;
+    const total=Math.round(ach*70+bud+(win?10:0));
+    say(&quot;Science returned: &quot;+Math.round(sc)+&quot; of target &quot;+M.target+&quot;.&quot;,win?&quot;t-ok&quot;:&quot;t-w&quot;);
+    result(total,win,Math.round(sc),c,why)}
+  ];
+  let i=0;
+  function choose(msg,opts){
+    say(msg,&quot;&quot;);const b=document.createElement(&quot;div&quot;);
+    opts.forEach(o=&gt;{const k=document.createElement(&quot;button&quot;);k.className=&quot;ghost&quot;;k.style.margin=&quot;4px 6px 0 0&quot;;k.textContent=o[0];k.onclick=()=&gt;{o[1]();b.remove();timer=setTimeout(next,700)};b.appendChild(k)});
+    $(&quot;#log&quot;).appendChild(b);return &quot;wait&quot;}
+  function decide(msg,loss,keep){
+    say(msg,&quot;t-w&quot;);
+    if(res&lt;15){sf*=loss;say(&quot;No reserve left, so science drops &quot;+Math.round((1-loss)*100)+&quot;%.&quot;,&quot;t-bad&quot;);return}
+    const b=document.createElement(&quot;div&quot;);
+    b.innerHTML=&#x27;&lt;button class=&quot;ghost&quot;&gt;Spend $15M to recover&lt;/button&gt; &lt;button class=&quot;ghost&quot;&gt;Accept the loss&lt;/button&gt;&#x27;;
+    const [y,n]=b.children;
+    y.onclick=()=&gt;{res-=15;sf*=keep;say(&quot;Recovery team works the problem. Science holds at &quot;+Math.round(keep*100)+&quot;%.&quot;,&quot;t-ok&quot;);b.remove();timer=setTimeout(next,700)};
+    n.onclick=()=&gt;{sf*=loss;say(&quot;You keep the reserve. Science drops &quot;+Math.round((1-loss)*100)+&quot;%.&quot;,&quot;t-w&quot;);b.remove();timer=setTimeout(next,700)};
+    $(&quot;#log&quot;).appendChild(b);return &quot;wait&quot;}
+  function next(){
+    if(i&gt;=steps.length)return;
+    const r=steps[i++]();if(r===&quot;wait&quot;){draw(prog);return}
+    draw(prog,ok===false);
+    if(ok===false){result(0,false,0,c,why);return}
+    if(i&lt;steps.length)timer=setTimeout(next,1100)
+  }
+  draw(0);timer=setTimeout(next,500);
+  function result(total,win,sc,c,why){
+    $(&quot;#launch&quot;).disabled=false;
+    const el=$(&quot;#result&quot;);el.style.display=&quot;block&quot;;
+    const grade=win?(total&gt;=85?&quot;Outstanding mission&quot;:&quot;Mission success&quot;):&quot;Mission not achieved&quot;;
+    el.innerHTML=&#x27;&lt;div class=&quot;score&quot;&gt;&#x27;+total+&#x27;&lt;span style=&quot;font-size:18px&quot;&gt; / 100&lt;/span&gt;&lt;/div&gt;&lt;h3&gt;&#x27;+grade+&#x27;&lt;/h3&gt;&#x27;+
+    &#x27;&lt;p&gt;Score = science return (70) + money left in budget (20) + success bonus (10).&lt;/p&gt;&lt;p&gt;&lt;small&gt;Real analog: &#x27;+c.M.ref+&#x27;&lt;/small&gt;&lt;/p&gt;&#x27;+
+    (why.length?&#x27;&lt;b&gt;What shaped this result&lt;/b&gt;&lt;ul&gt;&#x27;+[...new Set(why)].map(x=&gt;&quot;&lt;li&gt;&quot;+x+&quot;&lt;/li&gt;&quot;).join(&quot;&quot;)+&quot;&lt;/ul&gt;&quot;:&quot;&lt;p&gt;Clean flight. Try a cheaper design or a farther target.&lt;/p&gt;&quot;)+
+    &#x27;&lt;canvas id=&quot;patch&quot; width=&quot;260&quot; height=&quot;260&quot; style=&quot;display:block;margin:12px 0;max-width:100%&quot; role=&quot;img&quot; aria-label=&quot;Your mission patch&quot;&gt;&lt;/canvas&gt;&lt;button class=&quot;ghost&quot; onclick=&quot;fly()&quot;&gt;Fly this design again&lt;/button&gt;&#x27;;patch(total,win);
+  }
+}
+$(&quot;#launch&quot;).onclick=fly;
+$(&quot;#reset&quot;).onclick=()=&gt;{clearTimeout(timer);$(&quot;#sim&quot;).style.display=&quot;none&quot;;$(&quot;#launch&quot;).disabled=false;window.scrollTo({top:0,behavior:&quot;smooth&quot;})};
+const REC=[{v:0,p:0,pw:0,an:1,or:0,ins:[0,1,2],ex:[0,1],fuel:150,res:15},{v:1,p:0,pw:1,an:2,or:0,ins:[0,1,2,3],ex:[0,1],fuel:300,res:30},{v:2,p:0,pw:4,an:2,or:0,ins:[1,2],ex:[0,1],fuel:150,res:30}];
+$(&quot;#rec&quot;).onclick=()=&gt;{const r=REC[S.mi];Object.assign(S,r,{ins:new Set(r.ins),ex:new Set(r.ex)});update()};
+function patch(score,win){
+  const x=$(&quot;#patch&quot;).getContext(&quot;2d&quot;),W=260,cx=130,cy=130;
+  const name=($(&quot;#mname&quot;).value.trim()||&quot;Untitled Mission&quot;).toUpperCase().slice(0,24);
+  const key=[S.mi,S.v,S.p,S.pw,S.an,S.or,[...S.ins].join(&quot;&quot;),[...S.ex].join(&quot;&quot;),S.fuel,S.res,name].join(&quot;|&quot;);
+  let h=2166136261;for(const ch of key){h^=ch.charCodeAt(0);h=Math.imul(h,16777619)}
+  const R=()=&gt;((h=Math.imul(h^(h&gt;&gt;&gt;15),2246822507)&gt;&gt;&gt;0)/4294967296);
+  const hue=Math.floor(R()*360);
+  x.clearRect(0,0,W,W);x.save();x.beginPath();x.arc(cx,cy,126,0,7);x.clip();
+  const bg=x.createRadialGradient(cx,cy,10,cx,cy,126);bg.addColorStop(0,&quot;hsl(&quot;+hue+&quot;,55%,24%)&quot;);bg.addColorStop(1,&quot;hsl(&quot;+((hue+40)%360)+&quot;,60%,8%)&quot;);x.fillStyle=bg;x.fillRect(0,0,W,W);
+  for(let i=0;i&lt;50;i++){x.fillStyle=&quot;rgba(255,255,255,&quot;+(.3+R()*.6)+&quot;)&quot;;x.fillRect(R()*W,R()*W,1.6,1.6)}
+  x.strokeStyle=&quot;hsl(&quot;+((hue+180)%360)+&quot;,70%,68%)&quot;;x.lineWidth=2;
+  for(let i=0;i&lt;=S.or;i++){const q=46+i*18;x.beginPath();x.ellipse(cx,cy+6,q,q*(S.or===1?.55:1),R()*3,0,7);x.stroke()}
+  const r0=[12,16,34][S.mi],pr=[30,40,52][S.mi],sp=sprite([&quot;moon&quot;,&quot;mars&quot;,&quot;jupiter&quot;][S.mi],r0),k=pr/r0;
+  x.drawImage(sp,cx-sp.width/2*k,cy+6-sp.height/2*k,sp.width*k,sp.height*k);
+  [...S.ins].forEach((_,i)=&gt;{const a=-Math.PI/2+i*(Math.PI*2/Math.max(4,S.ins.size))+.4;x.fillStyle=&quot;#ffd24a&quot;;x.beginPath();x.arc(cx+Math.cos(a)*88,cy+6+Math.sin(a)*88,5,0,7);x.fill()});
+  x.fillStyle=&quot;#e6ecf8&quot;;for(let i=0;i&lt;=S.v;i++){const tx=cx-(S.v*7)+i*14;x.beginPath();x.moveTo(tx,cy+66);x.lineTo(tx-6,cy+78);x.lineTo(tx+6,cy+78);x.fill()}
+  x.textAlign=&quot;center&quot;;x.font=&quot;700 18px sans-serif&quot;;x.fillText(score+&quot; / 100&quot;,cx,cy+100);
+  x.restore();
+  x.lineWidth=6;x.strokeStyle=win?&quot;hsl(&quot;+hue+&quot;,75%,60%)&quot;:&quot;#8a93a8&quot;;x.beginPath();x.arc(cx,cy,122,0,7);x.stroke();
+  x.fillStyle=&quot;#fff&quot;;x.font=&quot;700 14px sans-serif&quot;;
+  const step=.17,start=-Math.PI/2-(name.length-1)*step/2;
+  [...name].forEach((ch,i)=&gt;{const a=start+i*step;x.save();x.translate(cx+Math.cos(a)*105,cy+Math.sin(a)*105+4);x.rotate(a+Math.PI/2);x.fillText(ch,0,0);x.restore()});
+}
+function craft(c){
+  const x=$(&quot;#sc&quot;).getContext(&quot;2d&quot;),W=320,H=150,cx=160,cy=78,bw=36+Math.min(40,c.dry/12),bh=bw*.75;
+  x.fillStyle=&quot;#0f1b33&quot;;x.fillRect(0,0,W,H);
+  x.fillStyle=&quot;rgba(255,255,255,.4)&quot;;for(let i=0;i&lt;25;i++)x.fillRect((i*53)%W,(i*29)%H,1.5,1.5);
+  if(c.W.a){const w=8+c.W.a*7;x.fillStyle=&quot;#3a78d8&quot;;x.fillRect(cx-bw/2-6-w,cy-13,w,26);x.fillRect(cx+bw/2+6,cy-13,w,26);x.fillStyle=&quot;#8fb4f0&quot;;x.fillRect(cx-bw/2-6,cy-1,6,2);x.fillRect(cx+bw/2,cy-1,6,2)}
+  else{x.fillStyle=&quot;#9aa4b8&quot;;for(let i=0;i&lt;(c.W.w&gt;100?2:1);i++)x.fillRect(cx-bw/2-24,cy-18+i*20,22,10)}
+  x.fillStyle=&quot;#d8a93a&quot;;x.fillRect(cx-bw/2,cy-bh/2,bw,bh);
+  const th=bh-12,f=Math.min(1,S.fuel/600);x.strokeStyle=&quot;rgba(0,0,0,.5)&quot;;x.strokeRect(cx-bw/2+4,cy-bh/2+6,8,th);x.fillStyle=&quot;#4cd68c&quot;;x.fillRect(cx-bw/2+4,cy-bh/2+6+th*(1-f),8,th*f);
+  c.ins.forEach((_,i)=&gt;{x.fillStyle=&quot;#ff8a5c&quot;;x.fillRect(cx-bw/2+16+i*11,cy-bh/2-8,8,8)});
+  x.fillStyle=&quot;#e6ecf8&quot;;x.beginPath();x.arc(cx+bw/2-8,cy-bh/2,6+S.an*5,Math.PI,0);x.fill();
+  if(S.ex.has(0)){x.fillStyle=&quot;#6fa8ff&quot;;x.fillRect(cx+bw/2-14,cy-bh/2+6,8,8)}
+  const sh=S.ex.has(1)?4:0;if(sh){x.fillStyle=&quot;#ffb347&quot;;x.fillRect(cx-bw/2-3,cy+bh/2,bw+6,4)}
+  x.fillStyle=c.P.ion?&quot;#6fe0ff&quot;:&quot;#c9d4ee&quot;;x.beginPath();x.moveTo(cx-8,cy+bh/2+sh);x.lineTo(cx+8,cy+bh/2+sh);x.lineTo(cx,cy+bh/2+sh+14);x.fill();
+  x.fillStyle=&quot;#e6ecf8&quot;;x.font=&quot;11px sans-serif&quot;;x.fillText(Math.round(c.wet)+&quot; kg wet&quot;,8,H-8);
+}
+build();update();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+" style="width:100%;height:1700px;border:1.5px solid var(--line);border-radius:12px;background:var(--bg)"></iframe>
+</section>
+
+<section data-page="profile">
+<h1>Your profile</h1>
+<div class="card"><p id="pn"></p><p id="pr"></p><p id="pq"></p>
+<button id="out">Sign out</button> <button id="reset">Reset my progress</button></div>
+</section>
+</main>
+<footer>Orbit Academy is an educational student project. Not affiliated with or endorsed by NASA. Figures are rounded public numbers.</footer>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const KEY="orbitAcademy.v1";
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(D))}catch(e){}}
+let D=load();D.read=D.read||{};D.best=D.best||0;
+const LESSONS=[
+{id:"solar",t:"The Solar System",p:["The Sun holds 99.8% of the system&rsquo;s mass. Eight planets orbit it, from Mercury to Neptune.","Rocky planets (Mercury, Venus, Earth, Mars) are close in. Gas and ice giants (Jupiter, Saturn, Uranus, Neptune) are far out.","Jupiter holds more than twice the mass of all the other planets combined."]},
+{id:"orbits",t:"Gravity, Orbits and Speed",p:["An orbit is falling around a planet while moving sideways fast enough to keep missing it.","In low Earth orbit (about 400 km up, where the ISS flies) speed is near 7.8 km/s and one lap takes about 90 minutes.","Leaving Earth for good needs about 11.2 km/s at the surface, called escape velocity."]},
+{id:"rockets",t:"How Rockets Work",p:["A rocket pushes mass backwards to move forwards. The rocket equation gives delta-v = Isp × 9.81 × ln(wet mass ÷ dry mass).","Isp measures engine efficiency. Chemical engines are around 230 to 450 s. Ion engines reach about 3,000 s but have very low thrust.","Because fuel itself has to be lifted, every extra kilogram costs more than a kilogram. That is why mass is the main limit in design."]},
+{id:"craft",t:"Inside a Spacecraft",p:["Main systems: structure, power, propulsion, communications, computer and instruments.","Solar panels give less power farther out because sunlight falls with the square of distance. Past Mars, many missions use RTGs, which turn heat from decaying radioactive material into electricity.","Spacecraft carry shielding and backup computers because radiation and faults are real risks."]},
+{id:"comm",t:"Light, Distance and Radio",p:["Radio travels at the speed of light, so far missions have a delay. Mars is 4 to 24 minutes away one way depending on where the planets are.","Signal strength also falls with the square of distance, so far spacecraft need big antennas and send data slowly.","Mission teams plan data use carefully because a spacecraft can often make more data than it can send home."]}];
+const PLANETS=[["Mercury",.39],["Venus",.72],["Earth",1],["Mars",1.52],["Jupiter",5.2],["Saturn",9.58],["Uranus",19.2],["Neptune",30.1]];
+const QZ=[
+["How long does sunlight take to reach Earth?",["About 8 seconds","About 8 minutes","About 8 hours","About 8 days"],1,"1 AU is about 150 million km, and light needs about 8 minutes 19 seconds."],
+["What gives a rocket more delta-v for the same fuel?",["A higher Isp engine","A bigger paint job","A heavier crew","A shorter name"],0,"Delta-v grows with Isp in the rocket equation."],
+["Why do solar panels struggle at Jupiter?",["It is too cold to see","Sunlight is about 1/27 as strong","There is no light","Panels melt"],1,"Jupiter is 5.2 AU away and 5.2 squared is about 27."],
+["What does an RTG do?",["Steers the craft","Turns heat from decaying radioactive material into electricity","Stores fuel","Cools the antenna"],1,"RTGs power Voyager and many outer-planet missions."],
+["Which mission first flew a helicopter on another planet?",["Apollo 11","Hubble","Perseverance with Ingenuity","Voyager 1"],2,"Ingenuity flew on Mars in 2021."],
+["Roughly what speed keeps a craft in low Earth orbit?",["7.8 km/s","78 km/h","780 km/s","0.78 km/s"],0,"About 7.8 km/s, around 28,000 km/h."]];
+function fmt(m){return m<1?(m*60).toFixed(0)+" seconds":m<120?m.toFixed(1)+" minutes":(m/60).toFixed(1)+" hours"}
+function mark(id){D.read[id]=!D.read[id];save();renderLessons();}
+function renderLessons(){
+  $("#lessons").innerHTML=LESSONS.map(l=>'<article class="card"><h3>'+l.t+'</h3>'+l.p.map(x=>"<p>"+x+"</p>").join("")+'<button data-m="'+l.id+'">'+(D.read[l.id]?"Read ✓ (undo)":"Mark as read")+"</button></article>").join("");
+  $$("[data-m]").forEach(b=>b.onclick=()=>mark(b.dataset.m));
+}
+function pct(){const n=LESSONS.filter(l=>D.read[l.id]).length;return{n,total:Math.round((n+(D.best>0?1:0)+(D.played?1:0))/7*100)}}
+function renderHome(){const p=pct();$("#hi").textContent="Hello, "+D.user.name;$("#pb").style.width=p.total+"%";$("#pt").textContent=p.n+" of 5 lessons read, quiz "+(D.best?"best "+D.best+"/6":"not taken")+", game "+(D.played?"opened":"not opened")+"."}
+function renderProfile(){const p=pct();$("#pn").textContent="Name: "+D.user.name+(D.user.cls?" · "+D.user.cls:"");$("#pr").textContent="Lessons read: "+p.n+" of 5. Overall progress: "+p.total+"%.";$("#pq").textContent="Best quiz score: "+(D.best||0)+" of 6."}
+let qi=0,qs=0;
+function renderQuiz(){
+  $("#qbest").textContent="Best score so far: "+D.best+" of 6.";
+  const box=$("#qbox");
+  if(qi>=QZ.length){if(qs>D.best){D.best=qs;save()}$("#qbest").textContent="Best score so far: "+D.best+" of 6.";box.innerHTML="<h3>You scored "+qs+" of "+QZ.length+"</h3><p>"+(qs>=5?"Great work. Go design a mission.":"Review the lessons and try again.")+'</p><button class="pri" id="rq">Retake quiz</button>';$("#rq").onclick=()=>{qi=0;qs=0;renderQuiz()};return}
+  const q=QZ[qi];
+  box.innerHTML="<p class=\"note\">Question "+(qi+1)+" of "+QZ.length+"</p><h3>"+q[0]+"</h3>"+q[1].map((o,i)=>'<button class="opt" data-i="'+i+'">'+o+"</button>").join("")+'<p id="fb"></p>';
+  $$(".opt").forEach(b=>b.onclick=()=>{
+    const i=+b.dataset.i;$$(".opt").forEach(x=>x.disabled=true);
+    $$(".opt")[q[2]].classList.add("good");if(i!==q[2])b.classList.add("bad");else qs++;
+    $("#fb").innerHTML=(i===q[2]?"Correct. ":"Not quite. ")+q[3]+' <button class="pri" id="nx">Next</button>';
+    $("#nx").onclick=()=>{qi++;renderQuiz()}});
+}
+const PAGES=["login","home","learn","nasa","quiz","game","profile"];
+function route(){
+  let p=location.hash.slice(1)||"home";if(!PAGES.includes(p))p="home";
+  if(!D.user)p="login";else if(p==="login")p="home";
+  $$("[data-page]").forEach(s=>s.hidden=s.dataset.page!==p);
+  $$("#nav a").forEach(a=>a.setAttribute("aria-current",a.getAttribute("href")==="#"+p?"page":"false"));
+  $("#nav").hidden=!D.user;document.body.classList.toggle("login",p==="login");
+  if(p==="home")renderHome();if(p==="profile")renderProfile();if(p==="learn")renderLessons();
+  if(p==="quiz"){qi=0;qs=0;renderQuiz()}
+  if(p==="game"&&!D.played){D.played=true;save()}
+  window.scrollTo(0,0);
+}
+$("#go").onclick=()=>{const n=$("#u").value.trim();if(!n){$("#err").textContent="Please enter your name.";return}D.user={name:n,cls:$("#c").value.trim()};save();location.hash="#home";route()};
+$("#out").onclick=()=>{delete D.user;save();location.hash="#login";route()};
+$("#reset").onclick=()=>{D.read={};D.best=0;D.played=false;save();renderProfile()};
+$("#ptab").innerHTML=PLANETS.map(p=>"<tr><td>"+p[0]+"</td><td>"+p[1]+"</td><td>"+(100/(p[1]*p[1])).toFixed(p[1]>3?1:0)+"%</td><td>"+fmt(p[1]*8.317)+"</td></tr>").join("");
+function calcs(){const au=+$("#au").value;$("#auv").textContent=au;$("#dl").textContent="One-way delay: "+fmt(au*8.317)+". A round trip takes twice that.";
+  const i=+$("#isp").value,d=+$("#dm").value,f=+$("#fm").value;$("#dv").textContent=d>0&&i>0&&f>=0?"Delta-v: "+(i*9.81*Math.log((d+f)/d)/1000).toFixed(2)+" km/s":"Enter positive numbers."}
+["au","isp","dm","fm"].forEach(id=>$("#"+id).oninput=calcs);calcs();
+function buildScene(){
+  let st="";for(let i=0;i<90;i++){const r=i%5===0?2.2:1.2;st+='<circle class="'+(i%3?'':'tw')+'" cx="'+((i*173)%1600)+'" cy="'+((i*97)%520)+'" r="'+r+'" fill="#fff" opacity="'+(.5+(i%4)*.12)+'"/>'}
+  const cr=(x,y,s,c1,c2,rot)=>'<g transform="translate('+x+' '+y+') rotate('+rot+') scale('+s+')"><polygon points="0,-60 22,-10 0,50 -22,-10" fill="'+c1+'"/><polygon points="0,-60 22,-10 0,5" fill="'+c2+'"/></g>';
+  const spikes=[[120,860,1.3,"#27d6c4","#7ff5e6",-8],[210,880,.9,"#7be06a","#c3ff9a",10],[1380,870,1.5,"#27d6c4","#7ff5e6",12],[1480,890,1,"#ff7bd0","#ffb3e6",-6],[760,890,.8,"#7be06a","#c3ff9a",4]].map(a=>cr(...a)).join("");
+  const flo=[[1100,330,.9,"#7ff5e6","#27d6c4",25],[300,220,.7,"#ffb3e6","#ff7bd0",-20],[600,360,.5,"#ffe28a","#ffb347",15]].map(a=>'<g class="fl">'+cr(...a)+'</g>').join("");
+  $("#scene").innerHTML='<svg viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice"><defs><linearGradient id="sk" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2a1457"/><stop offset=".45" stop-color="#8a3fb0"/><stop offset=".75" stop-color="#ff8fa3"/><stop offset="1" stop-color="#ffc58a"/></linearGradient><radialGradient id="neb" cx=".5" cy=".5" r=".5"><stop offset="0" stop-color="#27d6c4" stop-opacity=".55"/><stop offset="1" stop-color="#27d6c4" stop-opacity="0"/></radialGradient><radialGradient id="pl" cx=".35" cy=".3" r=".8"><stop offset="0" stop-color="#9ff3e8"/><stop offset=".6" stop-color="#27a8c4"/><stop offset="1" stop-color="#14527a"/></radialGradient></defs><rect width="1600" height="900" fill="url(#sk)"/><ellipse cx="400" cy="260" rx="480" ry="220" fill="url(#neb)"/>'+st+
+  '<g class="fl"><ellipse cx="1330" cy="190" rx="150" ry="30" fill="none" stroke="#ffe7b0" stroke-width="8" opacity=".7" transform="rotate(-18 1330 190)"/><circle cx="1330" cy="190" r="78" fill="url(#pl)"/><ellipse cx="1330" cy="190" rx="150" ry="30" fill="none" stroke="#ffe7b0" stroke-width="8" stroke-dasharray="0 150 300 1000" transform="rotate(-18 1330 190)"/></g><circle cx="220" cy="130" r="26" fill="#ffe28a" opacity=".9"/>'+flo+
+  '<path d="M0 620 L180 540 L360 600 L560 520 L780 610 L1000 530 L1220 600 L1420 520 L1600 590 V900 H0Z" fill="#d6597f"/><path d="M0 720 L220 650 L420 710 L640 640 L900 720 L1140 650 L1380 720 L1600 660 V900 H0Z" fill="#f0873a"/><path d="M220 650 L420 710 L330 760Z M640 640 L900 720 L760 770Z M1140 650 L1380 720 L1260 770Z" fill="#ffab5c"/><path d="M0 800 L260 760 L520 820 L840 770 L1120 830 L1380 780 L1600 820 V900 H0Z" fill="#b9501f"/><path d="M260 760 L520 820 L380 850Z M840 770 L1120 830 L980 860Z" fill="#cf6a2c"/>'+
+  '<g fill="#fff3e0"><path d="M980 690 a34 34 0 0 1 68 0Z"/><path d="M560 670 a24 24 0 0 1 48 0Z"/></g><g stroke="#fff3e0" stroke-width="4" fill="none"><path d="M1260 700 V630 M1260 630 l-26 -14 M1260 630 l26 -14 M1260 630 l2 30"/></g>'+spikes+'</svg>';
+}
+buildScene();
+addEventListener("hashchange",route);route();
+</script>
+</body>
+</html>
